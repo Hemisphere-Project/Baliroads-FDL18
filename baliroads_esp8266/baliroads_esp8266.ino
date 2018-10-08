@@ -25,15 +25,9 @@ void loop() {
 void anim_select(byte select) {
 
   animator.detach();                                // stop current animation
-  
-  if (select == 1) animator.attach(0.3, blinker);   // anim 1
+
+  if (select == 1) animator.attach(0.1, blinker);   // anim 1
   else return;                                      // No animation found
 
   anim_current = select;
 }
-
-
-
-
-
-
