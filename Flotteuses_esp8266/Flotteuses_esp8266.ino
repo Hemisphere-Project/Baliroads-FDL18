@@ -64,7 +64,6 @@ class Blinker
     //   OffTime = random(OffTimeMin,OffTimeMax);
     // }
 
-
     // ON
     if(Tnow-Tlast>OffTime){
       pwm1.setPin(pwmPin, 4095);
