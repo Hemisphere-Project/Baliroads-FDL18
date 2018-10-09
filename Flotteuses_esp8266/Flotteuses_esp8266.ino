@@ -2,6 +2,9 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
+//NodeMCU 1.0 (ESP-12E Module)
+//Programmateur AVRISP MKII
+
 // PWM cards
 Adafruit_PWMServoDriver pwm1 = Adafruit_PWMServoDriver();
 
