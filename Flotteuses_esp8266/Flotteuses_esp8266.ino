@@ -27,6 +27,9 @@ long OnTimeMax3 = 3000;
 long OffTimeMin3 = 200;
 long OffTimeMax3 = 300;
 
+// int onValue = 4095;
+int onValue = 10;
+
 
 //////////////////////////////////////////
 /////////////   BLINKER    ///////////////
@@ -56,7 +59,7 @@ class Blinker
     unsigned long Tnow = millis();
     // // ON
     // if(Tnow-Tlast>OffTime){
-    //   pwm1.setPin(pwmPin, 4095);
+    //   pwm1.setPin(pwmPin, onValue);
     // }
     // // OFF
     // if(Tnow-Tlast>OffTime+OnTime){
@@ -69,7 +72,7 @@ class Blinker
 
     // ON
     if(Tnow-Tlast>OffTime){
-      pwm1.setPin(pwmPin, 4095);
+      pwm1.setPin(pwmPin, onValue);
     }
     // OFF
     if(Tnow-Tlast>OffTime+OnTime){
@@ -95,7 +98,7 @@ class Blinker
     // BLINK TYPE 3 - During Off Time
     if((blinkType==3)&&(Tnow-Tlast<OffTime)){
       if((Tnow-Tlast>OffTime/3)&&(Tnow-Tlast<2*OffTime/3)){
-        pwm1.setPin(pwmPin, 4095);
+        pwm1.setPin(pwmPin, onValue);
       }
       if((Tnow-Tlast>2*OffTime/3)){
         pwm1.setPin(pwmPin, 0);
@@ -123,7 +126,15 @@ Blinker flotteur4(3);
 Blinker flotteur5(4);
 Blinker flotteur6(5);
 Blinker flotteur7(6);
-
+Blinker flotteur8(7);
+Blinker flotteur9(8);
+Blinker flotteur10(9);
+Blinker flotteur11(10);
+Blinker flotteur12(11);
+Blinker flotteur13(12);
+Blinker flotteur14(13);
+Blinker flotteur15(14);
+Blinker flotteur16(15);
 
 void loop() {
   flotteur1.Update();
@@ -133,4 +144,13 @@ void loop() {
   flotteur5.Update();
   flotteur6.Update();
   flotteur7.Update();
+	flotteur8.Update();
+	flotteur9.Update();
+	flotteur10.Update();
+	flotteur11.Update();
+	flotteur12.Update();
+	flotteur13.Update();
+	flotteur14.Update();
+	flotteur15.Update();
+	flotteur16.Update();
 }
