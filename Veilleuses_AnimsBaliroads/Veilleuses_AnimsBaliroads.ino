@@ -15,12 +15,13 @@
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMBALIROADS, PIN, NEO_GRB + NEO_KHZ800);
 
 // Timing
-int timeNext = 100;
+int timeNext = 60;
 int timeOn = 600;
 int Tstart;
 int indexOn = 0;
 unsigned long TlastOn = 0;
 unsigned long timesOn[NUMBALIROADS];
+bool goOn = true;
 
 
 // ON OFF
@@ -46,19 +47,31 @@ void setup() {
 void loop() {
 
   unsigned long Tnow = millis();
+  
+  // ANIM TYPE 1
+  // // ON
+  // if(Tnow-Tstart-TlastOn>=timeNext){
+  //   baliroad_ON(indexOn);
+  //   timesOn[indexOn] = Tnow;
+  //   TlastOn = Tnow;
+  //   indexOn ++;
+  //   if(indexOn == NUMBALIROADS){ indexOn=0; }
+  // }
+  // // OFF
+  // for(int i = 0; i < NUMBALIROADS; i++){
+  //   if(Tnow-Tstart-timesOn[i] >= timeOn){
+  //     baliroad_OFF(i);
+  //   }
+  // }
+
+  // ANIM TYPE 2
   // ON
   if(Tnow-Tstart-TlastOn>=timeNext){
-    baliroad_ON(indexOn);
-    timesOn[indexOn] = Tnow;
+    if(goOn == true){ baliroad_ON(indexOn); }
+    else baliroad_OFF(indexOn);
     TlastOn = Tnow;
     indexOn ++;
-    if(indexOn == NUMBALIROADS){ indexOn=0; }
-  }
-  // OFF
-  for(int i = 0; i < NUMBALIROADS; i++){
-    if(Tnow-Tstart-timesOn[i] >= timeOn){
-      baliroad_OFF(i);
-    }
+    if(indexOn == NUMBALIROADS){ indexOn=0; goOn = !goOn; }
   }
 
   pixels.show();
