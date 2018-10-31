@@ -9,7 +9,7 @@
 Adafruit_PWMServoDriver pwm1 = Adafruit_PWMServoDriver();
 
 
-int NUMBALIROADS = 16;
+int numBaliroads = 16;
 
 // Timing
 int indexOn = 0;
@@ -17,7 +17,7 @@ int timeNext = 60;
 int timeOn = 600;
 unsigned long Tstart;
 unsigned long TlastOn = 0;
-// unsigned long timesOn[NUMBALIROADS];
+// unsigned long timesOn[numBaliroads];
 bool goOn = true;
 
 int onValue = 50;
@@ -58,10 +58,10 @@ void loop() {
   //   timesOn[indexOn] = Tnow;
   //   TlastOn = Tnow;
   //   indexOn ++;
-  //   if(indexOn == NUMBALIROADS){ indexOn=0; }
+  //   if(indexOn == numBaliroads){ indexOn=0; }
   // }
   // // OFF
-  // for(int i = 0; i < NUMBALIROADS; i++){
+  // for(int i = 0; i < numBaliroads; i++){
   //   if(Tnow-Tstart-timesOn[i] >= timeOn){
   //     baliroad_OFF(i);
   //   }
@@ -74,7 +74,7 @@ void loop() {
     else baliroad_OFF(indexOn);
     TlastOn = Tnow;
     indexOn ++;
-    if(indexOn == NUMBALIROADS){ indexOn=0; goOn = !goOn; }
+    if(indexOn == numBaliroads){ indexOn=0; goOn = !goOn; }
   }
 
 }
