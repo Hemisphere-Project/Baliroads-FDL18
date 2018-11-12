@@ -28,7 +28,7 @@ long OffTimeMin3 = 200;
 long OffTimeMax3 = 300;
 
 // int onValue = 4095;
-int onValue = 10;
+int onValue = 4095;
 
 
 //////////////////////////////////////////
