@@ -15,8 +15,8 @@
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMBALIROADS, PIN, NEO_GRB + NEO_KHZ800);
 
 // Timing
-int timeNext = 60;
-int timeOn = 600;
+int timeNext = 50;
+// int timeOn = 400;
 int indexOn = 0;
 unsigned long TlastOn = 0;
 // unsigned long timesOn[NUMBALIROADS];

@@ -12,7 +12,7 @@ int numBaliroads = 16;
 
 // Timing
 uint8_t indexOn = 0;
-int timeNext = 400;
+int timeNext = 400;// STEPHANE 50 OK
 // int timeOn = 600;
 unsigned long Tstart;
 unsigned long TlastOn = 0;
