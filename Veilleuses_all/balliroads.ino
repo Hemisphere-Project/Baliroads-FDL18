@@ -6,14 +6,10 @@ int numBaliroads = 16;
 
 // Timing
 int indexOn = 0;
-int timeNext = 60;
-int timeOn = 600;
 unsigned long TlastOn = 0;
 unsigned long Tnow;
 bool goOn = true;
 bool balliRunning = false;
-
-int onValue = 4000;
 
 void balliroads_init() {
   pwm1.begin();
@@ -22,16 +18,11 @@ void balliroads_init() {
 }
 
 void balliroads_on(int pwmPin){
-  // if (id % 2) { pixels.setPixelColor(id, pixels.Color(5,5,5)); }
-  // else pixels.setPixelColor(id, pixels.Color(5,0,0));
   pwm1.setPin(pwmPin, onValue);
-  //Serial.printf("BALI ON: %i \n", pwmPin);
 }
 
 void balliroads_off(int pwmPin){
-  // pixels.setPixelColor(id, pixels.Color(0,0,0));
   pwm1.setPin(pwmPin, 0);
-  //Serial.printf("BALI OFF: %i \n", pwmPin);
 }
 
 void balliroads_stop() {
@@ -60,7 +51,9 @@ void balliroads_update() {
     TlastOn = Tnow;
     indexOn ++;
     if(indexOn == numBaliroads){ indexOn=0; goOn = !goOn; }
-
   }
-  
+}
+
+int balliroads_duration() {
+  return timeNext*32;
 }

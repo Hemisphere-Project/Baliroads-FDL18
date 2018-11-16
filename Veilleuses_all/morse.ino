@@ -1,6 +1,4 @@
 
-
-int timeDot = 200;
 // int timeDash = 3*timeDot;
 // int timePause = timeDot;
 // int timeBtwLetters = 3*timeDot;
@@ -31,28 +29,35 @@ bool breaksDIR[200];
 int breaksSize;
 int sequenceDuration;
 // Sequence Loop Utils
-int timeStart;
+unsigned long timeStart;
 int breaksIndex = 0;
 bool sequenceDone = true;
 bool updateSeq = false;
 bool spotIsOn = false;
 
 void morse_init() {
+  audio_init();
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
   morse_stop();
 }
 
 void morse_on(){
   dmx_set(1, 255);
-  dmx_send();
+  dmx_update();
+  digitalWrite(LED_BUILTIN, LOW);
+  audio_play();
   spotIsOn = true;
-  //Serial.printf("DMX ON: 1 \n");
+  //LOG("DMX ON: 1");
 }
 
 void morse_off(){
   dmx_set(1, 0);
-  dmx_send();
+  dmx_update();
+  digitalWrite(LED_BUILTIN, HIGH);
+  audio_stop();
   spotIsOn = false;
-  //Serial.printf("DMX OFF: 1 \n");
+  //LOG("DMX OFF: 1");
 }
 
 void morse_toggle() {
@@ -61,7 +66,8 @@ void morse_toggle() {
 }
 
 // START
-void morse_play(String phrase) {
+int morse_play(String phrase) {
+  morse_stop();
   
   // Phrase to sequence (Letters to Morse)
   String sequence;
@@ -70,7 +76,7 @@ void morse_play(String phrase) {
     if(phrase[i]==' '){ sequence += "+"; }
     sequence += "/";
   }
-  Serial.println(sequence);
+  //Serial.println(sequence);
 
   // Sequence code to Arrays of breakpoints
   int index=0;
@@ -107,34 +113,54 @@ void morse_play(String phrase) {
   // Useful Vars
   breaksSize = index;
   sequenceDuration = currentTime;
+  breaksIndex = 0;
 
   // Logs
-  // for(int i = 0; i < breaksSize; i++){
-  //   Serial.print("time "); Serial.println(breaksTimes[i]);
-  //  Serial.print("direction "); Serial.println(breaksDIR[i]);
-  // }
-  // Serial.print("sequenceDuration "); Serial.println(sequenceDuration);
+  /*LOG("Morse ANALYSED.");
+  for(int i = 0; i < breaksSize; i++){
+    LOGINL("time "); LOG(breaksTimes[i]);
+    LOGINL("direction "); LOG(breaksDIR[i]);
+  }
+  LOGINL("sequenceDuration "); LOG(sequenceDuration);
+  LOG("Morse START.");*/
 
   timeStart = millis();
   sequenceDone = false;
+
+  return sequenceDuration;
 }
 
 void morse_stop(){
+  morse_off();
   sequenceDone = true;
+  LOG("Morse STOP.");
 }
 
 // UPDATE SEQUENCE
-void morse_update(){
-  if (sequenceDone) return;
+bool morse_update(){
+  audio_update();
+  dmx_update();
+  yield();
+  
+  if (sequenceDone) return false;
   
   unsigned long Tnow = millis();
-  int breakTime = breaksTimes[breaksIndex] + timeStart  ;
+  unsigned long breakTime = breaksTimes[breaksIndex] + timeStart  ;
   bool breakDIR = breaksDIR[breaksIndex];
 
   if((Tnow > breakTime)&&(breaksIndex<breaksSize)) {
     if(breakDIR==0) morse_off();
     else morse_on();
     breaksIndex++;
+    //LOG("Morse UPDATE.");
   }
-  if(Tnow > sequenceDuration) morse_stop();
+  
+  // This was the last step
+  if(breaksIndex == breaksSize) {
+    LOG("Morse END.");
+    morse_stop();
+    return false;
+  }
+
+  return true;
 }

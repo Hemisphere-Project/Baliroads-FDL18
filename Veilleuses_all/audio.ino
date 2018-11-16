@@ -14,32 +14,32 @@ AudioOutputI2S *out;
 void audio_init() {
   SPIFFS.begin();
   out = new AudioOutputI2S();
-  out->SetGain(0.2);
+  out->SetGain(0.1);
   
   wav = new AudioGeneratorWAV();
 }
 
 void audio_play() {
   if (wav->isRunning()) wav->stop();
-  file = new AudioFileSourceSPIFFS("/tone.wav");
+  file = new AudioFileSourceSPIFFS("/sine660.wav");
   bool ok = wav->begin(file, out);
-  //if (ok) Serial.println("File started");
-  //else Serial.println("File not found");
+  //if (ok) LOG("Audio file started");
+  //else LOG("Audio file not found");
 }
 
 void audio_stop() {
-  if (wav->isRunning()) wav->stop();
+  if (wav->isRunning()) {
+    wav->stop();
+    //LOG("Audio file end");
+  }
 }
 
 // call in main loop to refresh audio
 void audio_update() {
   if (wav->isRunning()) {
       if (wav->loop()) {
-        //Serial.println("File is playing");
+        //LOG("Audio file is playing");
       }
-      else {
-        //Serial.println("File end");
-        wav->stop();
-      }
+      else audio_stop();
   }
 }
