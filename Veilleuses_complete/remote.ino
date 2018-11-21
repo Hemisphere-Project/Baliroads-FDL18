@@ -8,7 +8,6 @@ WiFiUDP Udp;
 unsigned int localUdpPort = 1111;
 char incomingPacket[255];
 
-int UDPinterval = 50;
 unsigned long TlastUDPsent = 0;
 unsigned long TlastUDPreceived = 0;
 
@@ -103,7 +102,7 @@ void info_send(const char outputMessage[]){
   if (forced) lastMessage = String(outputMessage);
   
   unsigned long Tnow = millis();
-  if (forced or (Tnow - TlastUDPsent > UDPinterval)) {
+  if (forced or (Tnow - TlastUDPsent > infoUDPinterval)) {
     Udp.beginPacket(ipBroadcast, 1111);
     Udp.write(outputMessage);
     Udp.endPacket();

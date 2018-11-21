@@ -165,3 +165,7 @@ bool morse_update(){
 
   return true;
 }
+
+bool morse_isRunning() {
+  return !sequenceDone;
+}

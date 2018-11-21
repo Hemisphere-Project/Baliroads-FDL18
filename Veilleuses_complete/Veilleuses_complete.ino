@@ -3,6 +3,7 @@
 #include "debug.h"
 
 #define V_VERSION 1.0   // first release 21/11/2018 with OTA
+#define V_VERSION 1.1   // "No Link" loop and Adjust config
 
 
 /*
@@ -10,23 +11,26 @@
 */
 
 // WIFI
-const char* ssid = "101WIFI";
-const char* password = "101internet";       // "" if no password
-IPAddress ipBroadcast(192, 168, 0, 255);    
+const char* ssid = "hmsphrwifi";            // SSID
+const char* password = "";                  // "" if no password
+IPAddress ipBroadcast(192, 168, 0, 255);    // Broadcast IP
+
+// SYNC   
+int infoUDPinterval = 50;   // interval ms to inform remote
 
 // MORSE
-int timeDot = 30; //100
-float volumeDot = 0.7;
+int timeDot = 60;           // duration of a Dot   60ms 
+float volumeDot = 0.7;      // voume of audio (max 1.0)
 
 // PWM
-int timeNext = 30;  // 60
-int onValue = 200;  //4095
+int timeNext = 50;  // Duration of Baliroad unit   60ms
+int onValue = 200;  // Max PWM value  4095
 
 // SEQ
-int pauseWord = 0; // pause after a word
+float pauseWord = 0;    // pause after a word
 float baliBefore = 0.5; // number of bali before word ends
-int baliWord = 1; // number of bali per word
-int baliPhrase = 1; // number of bali at phrase end
+float baliWord = 1;     // number of bali per word
+float baliPhrase = 2;   // number of bali at phrase end
 
 
 

@@ -59,3 +59,7 @@ void balliroads_update() {
 int balliroads_duration() {
   return timeNext*32;
 }
+
+bool balliroads_isRunning() {
+  return balliRunning;
+}

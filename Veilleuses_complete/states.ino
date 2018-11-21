@@ -70,7 +70,8 @@ void state_morse() {
     }
 
     // Play MORSE
-    nextStepTime = millis() + morse_play( Phrases[activePhrase][activeWord] ) - balliroads_duration() * baliBefore;
+    int duration = morse_play( Phrases[activePhrase][activeWord] );
+    nextStepTime = millis() + duration - balliroads_duration() * baliBefore;
   }
 
   /*
@@ -271,9 +272,19 @@ void state_auto() {
     activePhrase = 0;
     activeWord = 0;
 
-    morse_play("no wifi");
-    balliroads_start();
+    nextStepTime = 0;
   }
+
+  /*
+     DO STUFF
+  */
+  if (millis() >= nextStepTime) {
+    balliroads_stop();
+    int duration = morse_play("no link");
+    nextStepTime = millis() + duration + 2 * balliroads_duration();
+  }
+  else if (!morse_isRunning() and !balliroads_isRunning()) balliroads_start();
+  
 
   /*
       EXIT
