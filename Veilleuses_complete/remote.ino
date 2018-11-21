@@ -1,9 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
+#include <ESP8266mDNS.h>
+#include <ArduinoOTA.h>
 
-const char* ssid = "101WIFI";
-const char* password = "101internet";
-IPAddress ipBroadcast(192, 168, 0, 255);
 
 WiFiUDP Udp;
 unsigned int localUdpPort = 1111;
@@ -13,18 +12,22 @@ int UDPinterval = 50;
 unsigned long TlastUDPsent = 0;
 unsigned long TlastUDPreceived = 0;
 
-const int ledPin = 10;
 String remoteState = "no_link";
 
 /*
  * INITIALIZE CONNECTION
  */
 
-void sync_init() {
-  pinMode(ledPin, OUTPUT);
+void remote_init() {
 
+  String espName = "esp8266 - "+String(ESP.getChipId())+" v."+String(V_VERSION);
+  WiFi.hostname(espName);
+
+  
   LOGF("Connecting to %s ", ssid);
-  WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_STA);
+  if (password != "") WiFi.begin(ssid, password);
+  else WiFi.begin(ssid);
   while (WiFi.status() != WL_CONNECTED){
     delay(500);
     LOGINL(".");
@@ -33,6 +36,10 @@ void sync_init() {
 
   Udp.begin(localUdpPort);
   LOGF2("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);
+
+  ArduinoOTA.setHostname( espName.c_str() );
+  ArduinoOTA.begin();
+  LOG("OTA started");
 }
 
 
@@ -40,7 +47,7 @@ void sync_init() {
  * CHECK REMOTE STATE
  */
 
-String sync_checkRemote(){
+String remote_check(){
 
   String udpmsg = "";
   int packetSize = Udp.parsePacket();
@@ -62,34 +69,39 @@ String sync_checkRemote(){
   }
 
   if ((millis() - TlastUDPreceived) > 3000) remoteState = "no_link";
- 
+  
+  ArduinoOTA.handle();
+
   return remoteState;
 }
 
 /*
  * SEND STATE
  */
+ 
+String lastMessage;
 
-void sync_waiting() {
-  sync_send("waiting");
-  digitalWrite(ledPin, LOW);
+void info_waiting() {
+  info_send("waiting"); 
 }
 
-void sync_working(int phrase, int mot) {
+void info_working() {
   String msg = "working ";
-  msg += String(phrase);
-  msg += String(mot);
-  sync_send(msg.c_str());
-  digitalWrite(ledPin, HIGH);
+  msg += String(activePhrase);
+  msg += String(activeWord);
+  info_send(msg.c_str());
+  
 }
 
-void sync_epilogu() {
-  sync_send("epilogu", true);
-  digitalWrite(ledPin, HIGH);
+void info_epilogue() {
+  info_send("epilogu");
 }
 
-void sync_send(const char outputMessage[], bool forced){
+void info_send(const char outputMessage[]){
 
+  bool forced = (lastMessage != String(outputMessage));
+  if (forced) lastMessage = String(outputMessage);
+  
   unsigned long Tnow = millis();
   if (forced or (Tnow - TlastUDPsent > UDPinterval)) {
     Udp.beginPacket(ipBroadcast, 1111);
@@ -98,8 +110,4 @@ void sync_send(const char outputMessage[], bool forced){
     TlastUDPsent = Tnow;
   }
 
-}
-
-void sync_send(const char outputMessage[]) {
-  sync_send(outputMessage, false);
 }
