@@ -4,6 +4,7 @@
 
 #define V_VERSION 1.0   // first release 21/11/2018 with OTA
 #define V_VERSION 1.1   // "No Link" loop and Adjust config
+#define V_VERSION 1.2   // essais/config FDL18
 
 
 /*
@@ -19,19 +20,22 @@ IPAddress ipBroadcast(192, 168, 0, 255);    // Broadcast IP
 int infoUDPinterval = 50;   // interval ms to inform remote
 
 // MORSE
-int timeDot = 60;           // duration of a Dot   60ms 
-float volumeDot = 0.7;      // voume of audio (max 1.0)
+int timeDot = 100;           // duration of a Dot   60ms 
+float volumeDot = 0.3;      // voume of audio (max 1.0)
 
 // PWM
-int timeNext = 50;  // Duration of Baliroad unit   60ms
-int onValue = 200;  // Max PWM value  4095
+int timeNext = 60;  // Duration of Baliroad unit   60ms
+int onValue = 4095;  // Max PWM value  4095
 
 // SEQ
-float pauseWord = 0;    // pause after a word
-float baliBefore = 0.5; // number of bali before word ends
-float baliWord = 1;     // number of bali per word
+float pauseWord = 1;    // pause after a word
+
+float baliBefore = 0; // number of bali before word ends
+float baliWord = 2;     // number of bali per word
 float baliPhrase = 2;   // number of bali at phrase end
 
+float blinkDuration = 200;  // Duration of bali blink (receive)
+int blinkCount = 2;       // Number of blink on receive
 
 
 /*
@@ -42,7 +46,7 @@ String Phrases[N_PHRASE][10] = {
   {"peut", "etre", "ultime", "enigme", "ou", "derniere", "illusion"},
   {"comme", "ces", "reflets", "rouges", "le", "soir", "a", "lhorizon"}
 };
-int PhrasesSizes[N_PHRASE] = {7, 8};
+int PhrasesSizes[N_PHRASE] = {7, 8}; //{7, 8};
 
 int activePhrase = 0;
 int activeWord = 0;

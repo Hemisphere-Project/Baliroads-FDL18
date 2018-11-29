@@ -22,6 +22,7 @@ void audio_init() {
 
 void audio_play() {
   if (wav->isRunning()) wav->stop();
+  out->SetGain(volumeDot);
   file->open("/sine660.wav");
   bool ok = wav->begin(file, out);
   //if (ok) LOG("Audio file started");
@@ -30,6 +31,8 @@ void audio_play() {
 
 void audio_stop() {
   if (wav->isRunning()) {
+    out->SetGain(0);
+    delay(1);
     wav->stop();
     //LOG("Audio file end");
   }

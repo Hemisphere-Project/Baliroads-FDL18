@@ -63,3 +63,13 @@ int balliroads_duration() {
 bool balliroads_isRunning() {
   return balliRunning;
 }
+
+void balliroads_allON() {
+  for (int i=0; i< numBaliroads; i++) 
+    balliroads_on(i);
+}
+
+void balliroads_allOFF() {
+  for (int i=0; i< numBaliroads; i++) 
+    balliroads_off(i);
+}

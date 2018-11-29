@@ -1,4 +1,4 @@
-enum State_enum {WAIT, MORSE, BALI, PAUSE, STOP, EPILOGUE, END, AUTO};
+enum State_enum {WAIT, RECV, MORSE, BALI, PAUSE, STOP, EPILOGUE, END, AUTO};
 
 // state feedback
 const int ledPin = 10;
@@ -6,6 +6,7 @@ const int ledPin = 10;
 // state index
 byte state_index = -1;
 unsigned long nextStepTime = 0;
+byte blinkCounter = 0;
 
 // Callback function to states function
 void (*state_function[15])();
@@ -32,13 +33,63 @@ void state_waiting() {
       EXIT
   */
   if (remote_check() == "epilogu") return state_epilogue();
-  else if (remote_check() == "waiting") return state_morse();
+  else if (remote_check() == "waiting") return state_receive();
   else if (remote_check() == "no_link") return state_auto();
 
   /*
       INFORM
   */
   info_waiting();
+}
+
+
+/*
+    RECEIVE: blink bali
+*/
+void state_receive() {
+
+   /*
+      ENTER
+  */
+  if (state_index != RECV) {
+    LOG("SEQ: start recv");
+    state_index = RECV;
+    digitalWrite(ledPin, HIGH);
+
+    blinkCounter = 0;
+  }
+  
+
+  /*
+      EXIT
+  */
+  if (remote_check() == "working") return state_stop();
+  else if (millis() >= nextStepTime) {
+
+    if (blinkCounter < (blinkCount)*2) {
+      if ((blinkCounter % 2) == 0) {
+        balliroads_allON();
+        nextStepTime = millis() + blinkDuration/3;
+      }
+      else {
+        balliroads_allOFF();
+        nextStepTime = millis() + 2*blinkDuration/3;
+      }
+      blinkCounter += 1;
+    }
+    else if (blinkCounter == (blinkCount)*2) {
+      nextStepTime = millis() + 1000;
+      blinkCounter += 1;
+    }
+    
+    else return state_morse();
+  }
+
+  /*
+      INFORM
+  */
+  info_working();
+  
 }
 
 
@@ -200,16 +251,55 @@ void state_epilogue() {
     state_index = EPILOGUE;
     digitalWrite(ledPin, HIGH);
 
-    balliroads_start();
-    morse_play("hhhhhhh");
-
-    nextStepTime = millis() + baliPhrase * balliroads_duration();
-  }
+    blinkCounter = 0;
+  }  
 
   /*
       EXIT
   */
-  if (millis() >= nextStepTime) return state_end();
+  if (millis() >= nextStepTime) {
+    if (blinkCounter < 4) {
+
+      // Premiere paire de blink
+      if ((blinkCounter % 2) == 0) {
+        balliroads_allON();
+        morse_on(false);
+        nextStepTime = millis() + (blinkDuration*1.7)/3;
+      }
+      else {
+        balliroads_allOFF();
+        morse_off();
+        nextStepTime = millis() + 2*(blinkDuration*1.7)/3;
+      }
+      blinkCounter += 1;
+
+      // Pause
+      if (blinkCounter == 4) nextStepTime += 700;
+      
+    }
+    else if (blinkCounter < 8) {
+
+      // 2eme paire de blink
+      if ((blinkCounter % 2) == 0) {
+        balliroads_allON();
+        morse_on(false);
+        nextStepTime = millis() + (blinkDuration*1.7)/3;
+      }
+      else {
+        balliroads_allOFF();
+        morse_off();
+        nextStepTime = millis() + 2*(blinkDuration*1.7)/3;
+      }
+      blinkCounter += 1;
+    }
+    else if (blinkCounter == 8) {
+
+      // Pause finale
+      nextStepTime = millis() + 5000;
+      blinkCounter += 1;
+    }
+    else return state_end();
+  }
 
   /*
       INFORM
@@ -306,6 +396,7 @@ void sequencer_init() {
   pinMode(ledPin, OUTPUT);
 
   state_function[WAIT] = state_waiting;
+  state_function[RECV] = state_receive;
   state_function[MORSE] = state_morse;
   state_function[BALI] = state_bali;
   state_function[PAUSE] = state_pause;

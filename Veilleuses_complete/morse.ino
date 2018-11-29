@@ -42,13 +42,17 @@ void morse_init() {
   morse_stop();
 }
 
-void morse_on(){
+void morse_on(bool bleep){
   dmx_set(1, 255);
   dmx_update();
   digitalWrite(LED_BUILTIN, LOW);
-  audio_play();
+  if (bleep) audio_play();
   spotIsOn = true;
   //LOG("DMX ON: 1");
+}
+
+void morse_on() {
+  morse_on(true);
 }
 
 void morse_off(){
