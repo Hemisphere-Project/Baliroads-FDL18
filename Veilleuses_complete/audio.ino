@@ -20,13 +20,17 @@ void audio_init() {
   wav = new AudioGeneratorWAV();
 }
 
-void audio_play() {
+void audio_play(String path) {
   if (wav->isRunning()) wav->stop();
   out->SetGain(volumeDot);
-  file->open("/sine660.wav");
+  file->open(path.c_str());
   bool ok = wav->begin(file, out);
   //if (ok) LOG("Audio file started");
   //else LOG("Audio file not found");
+}
+
+void audio_play() {
+  audio_play("/sine660.wav");
 }
 
 void audio_stop() {

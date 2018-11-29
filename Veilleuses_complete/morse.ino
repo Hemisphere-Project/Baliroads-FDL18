@@ -25,7 +25,7 @@ String phraseTest = "sos a";
 
 // Sentence Analysis
 int breaksTimes[200];
-bool breaksDIR[200];
+int breaksDIR[200];
 int breaksSize;
 int sequenceDuration;
 // Sequence Loop Utils
@@ -52,16 +52,30 @@ void morse_on(bool bleep){
 }
 
 void morse_on() {
-  morse_on(true);
+  morse_on(true);   // light + bleep
 }
 
-void morse_off(){
+void morse_short() {
+  morse_on(false);  // light only
+  audio_play("/sine660Short.wav");
+}
+
+void morse_long() {
+  morse_on(false);  // light only
+  audio_play("/sine660Long.wav");
+}
+
+void morse_off(bool bleep){
   dmx_set(1, 0);
   dmx_update();
   digitalWrite(LED_BUILTIN, HIGH);
-  audio_stop();
+  if (bleep) audio_stop();
   spotIsOn = false;
   //LOG("DMX OFF: 1");
+}
+
+void morse_off() {
+  morse_off(true);   // light + bleep
 }
 
 void morse_toggle() {
@@ -90,21 +104,21 @@ int morse_play(String phrase) {
   for (int i = 0; i < sequence.length(); i++){
     if(sequence[i]=='.'){
       breaksTimes[index] = currentTime;
-      breaksDIR[index] = HIGH;
+      breaksDIR[index] = 1;
       index++;
       currentTime += timeDot;
       breaksTimes[index] = currentTime;
-      breaksDIR[index] = LOW;
+      breaksDIR[index] = 0;
       index++;
       currentTime += timeDot;
     }
     if(sequence[i]=='-'){
       breaksTimes[index] = currentTime;
-      breaksDIR[index] = HIGH;
+      breaksDIR[index] = 2;
       index++;
       currentTime += 3*timeDot;
       breaksTimes[index] = currentTime;
-      breaksDIR[index] = LOW;
+      breaksDIR[index] = 0;
       index++;
       currentTime += timeDot;
     }
@@ -151,11 +165,17 @@ bool morse_update(){
   
   unsigned long Tnow = millis();
   unsigned long breakTime = breaksTimes[breaksIndex] + timeStart  ;
-  bool breakDIR = breaksDIR[breaksIndex];
+  int breakDIR = breaksDIR[breaksIndex];
 
   if((Tnow > breakTime)&&(breaksIndex<breaksSize)) {
+    
     if(breakDIR==0) morse_off();
     else morse_on();
+    
+    /*if (breakDIR==0) morse_off(false);
+    else if (breakDIR==1) morse_short();
+    else if (breakDIR==2) morse_long();*/
+    
     breaksIndex++;
     //LOG("Morse UPDATE.");
   }

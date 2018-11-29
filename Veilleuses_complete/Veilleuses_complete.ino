@@ -30,12 +30,12 @@ int onValue = 4095;  // Max PWM value  4095
 // SEQ
 float pauseWord = 1;    // pause after a word
 
-float baliBefore = 0; // number of bali before word ends
+float baliBefore = 0;   // number of bali before word ends
 float baliWord = 2;     // number of bali per word
 float baliPhrase = 2;   // number of bali at phrase end
 
 float blinkDuration = 200;  // Duration of bali blink (receive)
-int blinkCount = 2;       // Number of blink on receive
+int blinkCount = 2;         // Number of blink on receive
 
 
 /*
