@@ -23,6 +23,7 @@ void setup() {
   pwm1.setPWMFreq(1000);
   Wire.setClock(400000);
 
+  baliroad_ON(0);
   baliroad_ON(1);
   baliroad_ON(2);
   baliroad_ON(3);
@@ -38,7 +39,6 @@ void setup() {
   baliroad_ON(13);
   baliroad_ON(14);
   baliroad_ON(15);
-  baliroad_ON(16);
 
 }
 
