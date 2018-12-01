@@ -51,6 +51,12 @@ void morse_on(bool bleep){
   //LOG("DMX ON: 1");
 }
 
+void morse_wait(){
+  dmx_set(1, 125);
+  dmx_update();
+  spotIsOn = true;
+}
+
 void morse_on() {
   morse_on(true);   // light + bleep
 }

@@ -27,6 +27,7 @@ void state_waiting() {
 
     balliroads_stop();
     morse_stop();
+    morse_wait();
   }
 
   /*
@@ -57,6 +58,7 @@ void state_receive() {
     digitalWrite(ledPin, HIGH);
 
     blinkCounter = 0;
+    morse_stop();
   }
   
 
