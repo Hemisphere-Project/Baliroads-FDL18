@@ -1,3 +1,11 @@
+//   ATTENTION
+//   option de compilation:
+
+//   Board: NodeMCU 1.0
+//   Flash Size: "4M (2M SPIFFS)"
+
+//   Pour flasher les data: "ESP8266 Sketch Data Upload" tool 
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include "debug.h"
@@ -5,6 +13,7 @@
 #define V_VERSION 1.0   // first release 21/11/2018 with OTA
 #define V_VERSION 1.1   // "No Link" loop and Adjust config
 #define V_VERSION 1.2   // essais/config FDL18
+#define V_VERSION 1.3   // ajustements dimanche (on 50% wait)
 
 
 /*
@@ -16,11 +25,11 @@ const char* ssid = "hmsphrwifi";            // SSID
 const char* password = "";                  // "" if no password
 IPAddress ipBroadcast(192, 168, 0, 255);    // Broadcast IP
 
-// SYNC   
+// SYNC
 int infoUDPinterval = 50;   // interval ms to inform remote
 
 // MORSE
-int timeDot = 100;           // duration of a Dot   60ms 
+int timeDot = 100;           // duration of a Dot   60ms
 float volumeDot = 0.3;      // voume of audio (max 1.0)
 
 // PWM

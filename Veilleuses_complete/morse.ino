@@ -52,7 +52,7 @@ void morse_on(bool bleep){
 }
 
 void morse_wait(){
-  dmx_set(1, 125);
+  dmx_set(1, 100);
   dmx_update();
   spotIsOn = true;
 }

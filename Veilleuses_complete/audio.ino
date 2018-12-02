@@ -16,7 +16,7 @@ void audio_init() {
   out = new AudioOutputI2S();
   out->SetGain(volumeDot);
 
-  file = new AudioFileSourceSPIFFS("/sine660.wav");
+  file = new AudioFileSourceSPIFFS("/sine660NoClick.wav");
   wav = new AudioGeneratorWAV();
 }
 
